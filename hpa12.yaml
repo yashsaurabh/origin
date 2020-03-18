@@ -1,0 +1,83 @@
+apiVersion: v1
+items:
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: 2020-02-28T06:46:15Z
+    generation: 5
+    labels:
+      run: hpa-example-pod
+    name: hpa-example-pod
+    namespace: hpa1
+    resourceVersion: "563037"
+    selfLink: /apis/apps.openshift.io/v1/namespaces/hpa1/deploymentconfigs/hpa-example-pod
+    uid: 04321e5e-59f6-11ea-98da-026d5f68d8cc
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      run: hpa-example-pod
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          run: hpa-example-pod
+      spec:
+        containers:
+        - image: han0495/hpa-example
+          imagePullPolicy: Always
+          name: hpa-example-pod
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          resources:
+            requests:
+              cpu: 200m
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-02-28T06:46:31Z
+      lastUpdateTime: 2020-02-28T06:46:31Z
+      message: replication controller "hpa-example-pod-1" successfully rolled out
+      reason: NewReplicationControllerAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-02-28T07:03:09Z
+      lastUpdateTime: 2020-02-28T07:03:09Z
+      message: Deployment config has minimum availability.
+      status: "True"
+      type: Available
+    details:
+      causes:
+      - type: ConfigChange
+      message: config change
+    latestVersion: 1
+    observedGeneration: 5
+    readyReplicas: 1
+    replicas: 1
+    unavailableReplicas: 0
+    updatedReplicas: 1
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

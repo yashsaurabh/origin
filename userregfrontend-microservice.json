@@ -1,0 +1,244 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "apps.openshift.io/v1",
+            "kind": "DeploymentConfig",
+            "metadata": {
+                "annotations": {
+                    "openshift.io/generated-by": "OpenShiftNewApp"
+                },
+                "creationTimestamp": "2020-02-25T09:25:12Z",
+                "generation": 2,
+                "labels": {
+                    "app": "userreg",
+                    "microservice": "userregfrontend"
+                },
+                "name": "userreg",
+                "namespace": "myser",
+                "resourceVersion": "349557",
+                "selfLink": "/apis/apps.openshift.io/v1/namespaces/myser/deploymentconfigs/userreg",
+                "uid": "b9a66427-57b0-11ea-8374-026d5f68d8cc"
+            },
+            "spec": {
+                "replicas": 1,
+                "revisionHistoryLimit": 10,
+                "selector": {
+                    "app": "userreg",
+                    "deploymentconfig": "userreg",
+                    "microservice": "userregfrontend"
+                },
+                "strategy": {
+                    "activeDeadlineSeconds": 21600,
+                    "resources": {},
+                    "rollingParams": {
+                        "intervalSeconds": 1,
+                        "maxSurge": "25%",
+                        "maxUnavailable": "25%",
+                        "timeoutSeconds": 600,
+                        "updatePeriodSeconds": 1
+                    },
+                    "type": "Rolling"
+                },
+                "template": {
+                    "metadata": {
+                        "annotations": {
+                            "openshift.io/generated-by": "OpenShiftNewApp"
+                        },
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app": "userreg",
+                            "deploymentconfig": "userreg",
+                            "microservice": "userregfrontend"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "env": [
+                                    {
+                                        "name": "USER_REGISTRATION_APPLICATION_DOMAIN",
+                                        "value": "http://userregsvc-myser.openshift.cf"
+                                    }
+                                ],
+                                "image": "docker-registry.default.svc:5000/myser/userreg@sha256:523dc600b93e721af01fce25bce096731370cf03eae616ed4e23781a2b0ea097",
+                                "imagePullPolicy": "Always",
+                                "name": "userreg",
+                                "ports": [
+                                    {
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8443,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "resources": {},
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "File"
+                            }
+                        ],
+                        "dnsPolicy": "ClusterFirst",
+                        "restartPolicy": "Always",
+                        "schedulerName": "default-scheduler",
+                        "securityContext": {},
+                        "terminationGracePeriodSeconds": 30
+                    }
+                },
+                "test": false,
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "userreg"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "userreg:promote",
+                                "namespace": "myser"
+                            },
+                            "lastTriggeredImage": "docker-registry.default.svc:5000/myser/userreg@sha256:523dc600b93e721af01fce25bce096731370cf03eae616ed4e23781a2b0ea097"
+                        },
+                        "type": "ImageChange"
+                    }
+                ]
+            },
+            "status": {
+                "availableReplicas": 1,
+                "conditions": [
+                    {
+                        "lastTransitionTime": "2020-02-25T09:25:48Z",
+                        "lastUpdateTime": "2020-02-25T09:25:48Z",
+                        "message": "Deployment config has minimum availability.",
+                        "status": "True",
+                        "type": "Available"
+                    },
+                    {
+                        "lastTransitionTime": "2020-02-25T09:25:45Z",
+                        "lastUpdateTime": "2020-02-25T09:25:49Z",
+                        "message": "replication controller \"userreg-1\" successfully rolled out",
+                        "reason": "NewReplicationControllerAvailable",
+                        "status": "True",
+                        "type": "Progressing"
+                    }
+                ],
+                "details": {
+                    "causes": [
+                        {
+                            "type": "ConfigChange"
+                        }
+                    ],
+                    "message": "config change"
+                },
+                "latestVersion": 1,
+                "observedGeneration": 2,
+                "readyReplicas": 1,
+                "replicas": 1,
+                "unavailableReplicas": 0,
+                "updatedReplicas": 1
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "openshift.io/generated-by": "OpenShiftNewApp"
+                },
+                "creationTimestamp": "2020-02-25T09:25:12Z",
+                "labels": {
+                    "app": "userreg",
+                    "microservice": "userregfrontend"
+                },
+                "name": "userreg",
+                "namespace": "myser",
+                "resourceVersion": "349398",
+                "selfLink": "/api/v1/namespaces/myser/services/userreg",
+                "uid": "b9a8c8fb-57b0-11ea-8374-026d5f68d8cc"
+            },
+            "spec": {
+                "clusterIP": "172.30.165.162",
+                "ports": [
+                    {
+                        "name": "8080-tcp",
+                        "port": 8080,
+                        "protocol": "TCP",
+                        "targetPort": 8080
+                    },
+                    {
+                        "name": "8443-tcp",
+                        "port": 8443,
+                        "protocol": "TCP",
+                        "targetPort": 8443
+                    }
+                ],
+                "selector": {
+                    "app": "userreg",
+                    "deploymentconfig": "userreg",
+                    "microservice": "userregfrontend"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "route.openshift.io/v1",
+            "kind": "Route",
+            "metadata": {
+                "annotations": {
+                    "openshift.io/host.generated": "true"
+                },
+                "creationTimestamp": "2020-02-25T09:26:48Z",
+                "labels": {
+                    "app": "userreg",
+                    "microservice": "userregfrontend"
+                },
+                "name": "userreg",
+                "namespace": "myser",
+                "resourceVersion": "349723",
+                "selfLink": "/apis/route.openshift.io/v1/namespaces/myser/routes/userreg",
+                "uid": "f2de97ec-57b0-11ea-8374-026d5f68d8cc"
+            },
+            "spec": {
+                "port": {
+                    "targetPort": "8080-tcp"
+                },
+                "to": {
+                    "kind": "Service",
+                    "name": "userreg",
+                    "weight": 100
+                },
+                "wildcardPolicy": "None"
+            },
+            "status": {
+                "ingress": [
+                    {
+                        "conditions": [
+                            {
+                                "lastTransitionTime": "2020-02-25T09:26:48Z",
+                                "status": "True",
+                                "type": "Admitted"
+                            }
+                        ],
+                        "host": "userreg-myser.openshift.cf",
+                        "routerName": "router",
+                        "wildcardPolicy": "None"
+                    }
+                ]
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": "",
+        "selfLink": ""
+    }
+}

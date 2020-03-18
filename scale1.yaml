@@ -1,0 +1,12 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: wildfly-basic
+spec:
+    scaleTargetRef:
+         kind: Deploymentconfig
+         name: wildfly-basic
+    minReplicas: 1
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 30
+

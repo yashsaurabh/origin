@@ -1,0 +1,310 @@
+apiVersion: v1
+items:
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: 2020-02-25T09:16:49Z
+    generation: 2
+    labels:
+      app: mongodb
+      microservice: userregsvc
+    name: mongodb
+    namespace: myser1
+    resourceVersion: "348103"
+    selfLink: /apis/apps.openshift.io/v1/namespaces/myser/deploymentconfigs/mongodb
+    uid: 8daa4bd4-57af-11ea-8374-026d5f68d8cc
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: mongodb
+      deploymentconfig: mongodb
+      microservice: userregsvc
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: mongodb
+          deploymentconfig: mongodb
+          microservice: userregsvc
+      spec:
+        containers:
+        - env:
+          - name: MONGODB_ADMIN_PASSWORD
+            value: password
+          - name: MONGODB_DATABASE
+            value: userdb
+          - name: MONGODB_PASSWORD
+            value: password
+          - name: MONGODB_USER
+            value: mongouser
+          image: centos/mongodb-26-centos7@sha256:60a97b31cf67e651fe98bed69ed86d56e3175a125488b978f681930940bb98ce
+          imagePullPolicy: Always
+          name: mongodb
+          ports:
+          - containerPort: 27017
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/mongodb/data
+            name: mongodb-volume-1
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: mongodb-volume-1
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - mongodb
+        from:
+          kind: ImageStreamTag
+          name: mongodb:latest
+          namespace: myser1
+        lastTriggeredImage: centos/mongodb-26-centos7@sha256:60a97b31cf67e651fe98bed69ed86d56e3175a125488b978f681930940bb98ce
+      type: ImageChange
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-02-25T09:16:53Z
+      lastUpdateTime: 2020-02-25T09:16:53Z
+      message: Deployment config has minimum availability.
+      status: "True"
+      type: Available
+    - lastTransitionTime: 2020-02-25T09:16:54Z
+      lastUpdateTime: 2020-02-25T09:16:54Z
+      message: replication controller "mongodb-1" successfully rolled out
+      reason: NewReplicationControllerAvailable
+      status: "True"
+      type: Progressing
+    details:
+      causes:
+      - type: ConfigChange
+      message: config change
+    latestVersion: 1
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    unavailableReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: 2020-02-25T09:19:40Z
+    generation: 2
+    labels:
+      app: userregsvc
+      microservice: userregsvc
+    name: userregsvc
+    namespace: myser1
+    resourceVersion: "348638"
+    selfLink: /apis/apps.openshift.io/v1/namespaces/myser/deploymentconfigs/userregsvc
+    uid: f37644ec-57af-11ea-8374-026d5f68d8cc
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: userregsvc
+      deploymentconfig: userregsvc
+      microservice: userregsvc
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: userregsvc
+          deploymentconfig: userregsvc
+          microservice: userregsvc
+      spec:
+        containers:
+        - env:
+          - name: DATABASE_SERVICE_NAME
+            value: mongodb
+          - name: EMAIL_APPLICATION_DOMAIN
+            value: http://emailsvc:8080
+          - name: MONGODB_DATABASE
+            value: userdb
+          - name: MONGODB_PASSWORD
+            value: password
+          - name: MONGODB_USER
+            value: mongouser
+          image: docker-registry.default.svc:5000/myser/userregsvc@sha256:62c5ba52666500ffcf7d501667685ec455e297da499954a6b5ae6a26f7ac14fa
+          imagePullPolicy: Always
+          name: userregsvc
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - userregsvc
+        from:
+          kind: ImageStreamTag
+          name: userregsvc:latest
+          namespace: myser1
+        lastTriggeredImage: docker-registry.default.svc:5000/myser/userregsvc@sha256:62c5ba52666500ffcf7d501667685ec455e297da499954a6b5ae6a26f7ac14fa
+      type: ImageChange
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-02-25T09:20:00Z
+      lastUpdateTime: 2020-02-25T09:20:00Z
+      message: Deployment config has minimum availability.
+      status: "True"
+      type: Available
+    - lastTransitionTime: 2020-02-25T09:19:58Z
+      lastUpdateTime: 2020-02-25T09:20:01Z
+      message: replication controller "userregsvc-1" successfully rolled out
+      reason: NewReplicationControllerAvailable
+      status: "True"
+      type: Progressing
+    details:
+      causes:
+      - type: ConfigChange
+      message: config change
+    latestVersion: 1
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    unavailableReplicas: 0
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: 2020-02-25T09:16:49Z
+    labels:
+      app: mongodb
+      microservice: userregsvc
+    name: mongodb
+    namespace: myser1
+    resourceVersion: "348050"
+    selfLink: /api/v1/namespaces/myser/services/mongodb
+    uid: 8dabc8c4-57af-11ea-8374-026d5f68d8cc
+  spec:
+    clusterIP: 172.30.13.125
+    ports:
+    - name: 27017-tcp
+      port: 27017
+      protocol: TCP
+      targetPort: 27017
+    selector:
+      app: mongodb
+      deploymentconfig: mongodb
+      microservice: userregsvc
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: 2020-02-25T09:19:40Z
+    labels:
+      app: userregsvc
+      microservice: userregsvc
+    name: userregsvc
+    namespace: myser1
+    resourceVersion: "348500"
+    selfLink: /api/v1/namespaces/myser/services/userregsvc
+    uid: f3777281-57af-11ea-8374-026d5f68d8cc
+  spec:
+    clusterIP: 172.30.88.37
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: userregsvc
+      deploymentconfig: userregsvc
+      microservice: userregsvc
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    creationTimestamp: 2020-02-25T09:22:36Z
+    labels:
+      app: userregsvc
+      microservice: userregsvc
+    name: userregsvc
+    namespace: myser1
+    resourceVersion: "349035"
+    selfLink: /apis/route.openshift.io/v1/namespaces/myser/routes/userregsvc
+    uid: 5c4990c0-57b0-11ea-8374-026d5f68d8cc
+  spec:
+    host: userregsvc-myser.openshift.cf
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: userregsvc
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: 2020-02-25T09:22:36Z
+        status: "True"
+        type: Admitted
+      host: userregsvc-myser.openshift.cf
+      routerName: router
+      wildcardPolicy: None
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

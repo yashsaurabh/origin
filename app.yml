@@ -1,0 +1,24 @@
+objects:
+apiVersion: v1
+kind: DeploymentConfig
+metadata: 
+     name: test-deployment
+     labels: test-deployment
+
+spec: 
+   replicas: 2
+   selector:
+        matchLabels: 
+           app: test-deployment
+
+   template:
+       metadata:
+           labels:
+              app: test-deployment
+   
+       spec: 
+         containers: 
+         - name: test
+           image: httpd
+           ports:
+           - containerPort:80

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: myphp2
+spec:
+  host: myphp1-test.openshift.cf
+  path: /
+  to:
+    kind: Service
+    name: myphp2
+
+

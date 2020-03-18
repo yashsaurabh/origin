@@ -1,0 +1,242 @@
+{
+    "kind": "List",
+    "apiVersion": "v1",
+    "metadata": {},
+    "items": [
+        {
+            "kind": "ImageStream",
+            "apiVersion": "image.openshift.io/v1",
+            "metadata": {
+                "name": "ruby-25-centos7",
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "ruby-hello-world"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "OpenShiftNewApp"
+                }
+            },
+            "spec": {
+                "lookupPolicy": {
+                    "local": false
+                },
+                "tags": [
+                    {
+                        "name": "latest",
+                        "annotations": {
+                            "openshift.io/imported-from": "centos/ruby-25-centos7"
+                        },
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "centos/ruby-25-centos7"
+                        },
+                        "generation": null,
+                        "importPolicy": {},
+                        "referencePolicy": {
+                            "type": ""
+                        }
+                    }
+                ]
+            },
+            "status": {
+                "dockerImageRepository": ""
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "image.openshift.io/v1",
+            "metadata": {
+                "name": "ruby-hello-world",
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "ruby-hello-world"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "OpenShiftNewApp"
+                }
+            },
+            "spec": {
+                "lookupPolicy": {
+                    "local": false
+                }
+            },
+            "status": {
+                "dockerImageRepository": ""
+            }
+        },
+        {
+            "kind": "BuildConfig",
+            "apiVersion": "build.openshift.io/v1",
+            "metadata": {
+                "name": "ruby-hello-world",
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "ruby-hello-world"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "OpenShiftNewApp"
+                }
+            },
+            "spec": {
+                "triggers": [
+                    {
+                        "type": "GitHub",
+                        "github": {
+                            "secret": "NRyNcfcYu7No-fYHJ6Y3"
+                        }
+                    },
+                    {
+                        "type": "Generic",
+                        "generic": {
+                            "secret": "ckQe6ylq4dTr6XVxOfXX"
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChange": {}
+                    }
+                ],
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "https://github.com/openshift/ruby-hello-world",
+                        "ref": "master"
+                    }
+                },
+                "strategy": {
+                    "type": "Docker",
+                    "dockerStrategy": {
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "name": "ruby-25-centos7:latest"
+                        }
+                    }
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "ruby-hello-world:latest"
+                    }
+                },
+                "resources": {},
+                "postCommit": {},
+                "nodeSelector": null
+            },
+            "status": {
+                "lastVersion": 0
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "apps.openshift.io/v1",
+            "metadata": {
+                "name": "ruby-hello-world",
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "ruby-hello-world"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "OpenShiftNewApp"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "ruby-hello-world"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "ruby-hello-world:latest"
+                            }
+                        }
+                    }
+                ],
+                "replicas": 1,
+                "test": false,
+                "selector": {
+                    "app": "ruby-hello-world",
+                    "deploymentconfig": "ruby-hello-world"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app": "ruby-hello-world",
+                            "deploymentconfig": "ruby-hello-world"
+                        },
+                        "annotations": {
+                            "openshift.io/generated-by": "OpenShiftNewApp"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "ruby-hello-world",
+                                "image": "ruby-hello-world:latest",
+                                "ports": [
+                                    {
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "resources": {}
+                            }
+                        ]
+                    }
+                }
+            },
+            "status": {
+                "latestVersion": 0,
+                "observedGeneration": 0,
+                "replicas": 0,
+                "updatedReplicas": 0,
+                "availableReplicas": 0,
+                "unavailableReplicas": 0
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "ruby-hello-world",
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "ruby-hello-world"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "OpenShiftNewApp"
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "8080-tcp",
+                        "protocol": "TCP",
+                        "port": 8080,
+                        "targetPort": 8080
+                    }
+                ],
+                "selector": {
+                    "app": "ruby-hello-world",
+                    "deploymentconfig": "ruby-hello-world"
+                }
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        }
+    ]
+}

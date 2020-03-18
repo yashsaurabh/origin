@@ -1,0 +1,20 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: memory-autoscale2 
+  namespace: scaledemo1
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1 
+    name: wildfly-basic
+    kind: DeploymentConfig 
+  minReplicas: 1 
+  maxReplicas: 10 
+  metrics:
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        name: memory-percent
+        type: Utilization
+        averageUtilization: 5

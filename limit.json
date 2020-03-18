@@ -1,0 +1,76 @@
+{
+    "kind": "LimitRange",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "mylimits",
+        "creationTimestamp": null
+    },
+    "spec": {
+        "limits": [
+            {
+                "type": "Pod",
+                "max": {
+                    "cpu": "0.2",
+                    "memory": "1Gi"
+                },
+                "min": {
+                    "cpu": "30m",
+                    "memory": "5Mi"
+                }
+            },
+            {
+                "type": "Container",
+                "max": {
+                    "cpu": "1",
+                    "memory": "1Gi"
+                },
+                "min": {
+                    "cpu": "50m",
+                    "memory": "5Mi"
+                },
+                "default": {
+                    "cpu": "50m",
+                    "memory": "200Mi"
+                }
+            }
+        ],
+	"requests": [
+	   {
+		"type": "Pod",
+  		"max": {
+			"cpu": "100m",
+			"memory": "200mi"
+			},
+
+         	"min": {
+			"cpu": "50m",
+			"memory": "50mi"
+		
+}
+},
+ {
+     
+                "type": "Container",
+                "max": {
+                    "cpu": "200m",
+                    "memory": "300mi"
+                },
+                "min": {
+                    "cpu": "50m",
+                    "memory": "400mi"
+                },
+                "default": {
+                    "cpu": "100m",
+                    "memory": "500mi"
+                }
+            }
+        ]
+
+ }
+}
+
+
+
+
+
+

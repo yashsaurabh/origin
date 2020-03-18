@@ -1,0 +1,50 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+ 
+  labels:
+    app: newapp
+  name: newapp
+  namespace: build2
+spec:
+  replicas: 1
+  selector:
+    deploymentconfig: newapp
+  resources: {}
+  rollingParams: null
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: newapp
+        deploymentconfig: newapp
+    spec:
+      containers:
+        - image: myapp1/myapp1:latest
+          imagePullPolicy: Always
+          name: myapp1
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 8443
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - myapp1
+        from:
+          kind: ImageStreamTag
+          name: 'myapp1:latest'
+          namespace: build2
+      type: ImageChange
+    
+

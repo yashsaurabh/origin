@@ -1,0 +1,20 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: memory-autoscale
+  namespace: myproj
+spec:
+  scaleTargetRef:
+    apiVersion: apps.openshift.io/v1
+    name: hpa-example-pod
+    kind: DeploymentConfig
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        name: cpu-percent
+        type: Utilization
+        averageUtilization: 30

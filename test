@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: hpa-example-pod
+parameters:
+- name: hpa-example-pod
+  description: What to name this application
+  value: hpa-example-pod
+- name: NUM_REPLICAS
+  description: How many replicas of the pod to deploy?
+  value: '1'
+- name: MAX_REPLICAS
+  description: Limit on number of replicas to create
+  value: '8'
+objects:
+- apiVersion: extensions/v1beta1
+  kind: HorizontalPodAutoscaler
+  metadata:
+    name: ${DEPLOYMENT_NAME}
+  spec:
+    scaleRef:
+      kind: DeploymentConfig
+      name: ${DEPLOYMENT_NAME}
+      apiVersion: v1
+      subresource: scale
+    minReplicas: ${NUM_REPLICAS}
+    maxReplicas: ${MAX_REPLICAS}
+    cpuUtilization:
+      targetPercentage: 30
+

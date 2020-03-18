@@ -1,0 +1,124 @@
+# This is the default ansible 'hosts' file.
+#
+# It should live in /etc/ansible/hosts
+#
+#   - Comments begin with the '#' character
+#   - Blank lines are ignored
+#   - Groups of hosts are delimited by [header] elements
+#   - You can enter hostnames or ip addresses
+#   - A hostname/ip can be a member of multiple groups
+
+# Ex 1: Ungrouped hosts, specify before any group headers.
+
+## green.example.com
+## blue.example.com
+## 192.168.100.1
+## 192.168.100.10
+
+# Ex 2: A collection of hosts belonging to the 'webservers' group
+
+## [webservers]
+## alpha.example.org
+## beta.example.org
+## 192.168.1.100
+## 192.168.1.110
+
+# If you have multiple hosts following a pattern you can specify
+# them like this:
+
+## www[001:006].example.com
+
+# Ex 3: A collection of database servers in the 'dbservers' group
+
+## [dbservers]
+## 
+## db01.intranet.mydomain.net
+## db02.intranet.mydomain.net
+## 10.25.1.56
+## 10.25.1.57
+
+# Here's another example of host ranges, this time there are no
+# leading 0s:
+
+## db-[99:101]-node.example.com
+# add follows to the end
+ [OSEv3:children]
+ masters
+ nodes
+ etcd
+ new_nodes
+
+ [OSEv3:vars]
+ # admin user created in previous section
+ ansible_ssh_user=centos
+ ansible_become=true
+ openshift_deployment_type=origin
+ ansible_become=yes 
+ openshift_disable_check=docker_image_availability,memory_availability,package_availability,disk_availability,package_version,docker_storage
+openshift_metrics_install_metrics=true
+openshift_metrics_hawkular_hostname=metrics.{{openshift_master_default_subdomain}}
+
+
+#nfs storage for merics
+#openshift_metrics_storage_kind=nfs
+openshift_metrics_storage_access_modes=['ReadWriteOnce']
+openshift_metrics_storage_nfs_directory=/exports/nfs
+openshift_metrics_storage_nfs_options='*(rw,root_squash)'
+openshift_metrics_storage_host=nfs.openshift.cf
+openshift_metrics_storage_volume_name=metrics
+openshift_metrics_storage_volume_size=10Gi
++openshift_metrics_storage_labels={'storage': 'metrics'}
+
+
+## Add Prometheus Metrics:
+openshift_hosted_prometheus_deploy=True
+openshift_prometheus_node_selector={"node-role.kubernetes.io/infra":"true"}
+openshift_prometheus_namespace=openshift-metrics
+
+# Prometheus
+openshift_prometheus_storage_kind=nfs
+openshift_prometheus_storage_access_modes=['ReadWriteOnce']
+openshift_prometheus_storage_nfs_directory=/export/nfs
+openshift_prometheus_storage_nfs_options='*(rw,root_squash)'
+openshift_prometheus_storage_volume_name=prometheus
+openshift_prometheus_storage_volume_size=1Gi
+openshift_prometheus_storage_labels={'storage': 'prometheus'}
+openshift_prometheus_storage_type='pvc'
+
+
+openshift_enable_unsupported_configurations=True
+ # use HTPasswd for authentication
+ openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider'}]
+ # define default sub-domain for Master node
+ openshift_master_default_subdomain=openshift.cf
+ # allow unencrypted connection within cluster
+ openshift_docker_insecure_registries=172.30.0.0/16
+
+ [masters]
+master.openshift.cf openshift_schedulable=true containerized=false
+
+ [etcd]
+ master.openshift.cf
+
+ [new_nodes]
+ node1.openshift.cf
+
+
+ [nodes]
+ # defined values for [openshift_node_group_name] in the file below
+ # [/usr/share/ansible/openshift-ansible/roles/openshift_facts/defaults/main.yml]
+ master.openshift.cf openshift_node_group_name='node-config-master-infra'
+ node.openshift.cf openshift_node_group_name='node-config-compute'
+# node02.srv.world openshift_node_group_name='node-config-compute'
+
+ # if you'd like to separate Master node feature and Infra node feature, set like follows
+ # ctrl.srv.world openshift_node_group_name='node-config-master'
+ # node01.srv.world openshift_node_group_name='node-config-compute'
+ # node02.srv.world openshift_node_group_name='node-config-infra'
+
+ [new_nodes]
+ node1.openshift.cf openshift_node_group_name='node-config-compute'
+
+ # run Prerequisites Playbook
+
+

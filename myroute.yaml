@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: newapp
+spec:
+  host: myapp1-build2.openshift.cf
+  to:
+    kind: Service
+    name: newapp
+

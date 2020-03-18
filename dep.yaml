@@ -1,0 +1,39 @@
+kind: "DeploymentConfig"
+apiVersion: "v1"
+metadata:
+   name: "database"
+spec:
+   template:
+      metadata:
+         labels:
+            name: "Database1"
+spec:
+   containers:
+      - name: "vipinopenshifttest"
+         image: "openshift/mongoDB"
+         ports:
+            - containerPort: 8080
+               protocol: "TCP"
+replicas: 5
+selector:
+   name: "database"
+triggers:
+- type: "ConfigChange"
+- type: "ImageChange"
+   imageChangeParams:
+      automatic: true
+      containerNames:
+         - "vipinopenshifttest"
+      from:
+         kind: "ImageStreamTag"
+         name: "mongoDB:latest"
+   strategy:
+      type: "Rolling"
+                 rollingParams:
+          timeoutSeconds: 5s
+          maxSurge: “50"
+          maxUnavailable: "80"
+          pre: {}
+          post: {}
+
+
