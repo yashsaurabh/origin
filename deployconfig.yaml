@@ -1,0 +1,82 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+ 
+  labels:
+    app: myphp
+  name: myphp
+  namespace: pipeline
+spec:
+  replicas: 1
+  selector:
+    deploymentconfig: myphp
+  resources: {}
+  rollingParams: null
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: myphp
+        deploymentconfig: myphp
+    spec:
+      containers:
+        - image: myapp1/myapp1:latest
+          imagePullPolicy: Always
+          name: myapp1
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 8443
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - myapp1
+        from:
+          kind: ImageStreamTag
+          name: 'myapp1:latest'
+          namespace: pipeline
+      type: ImageChange
+    
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: myphp
+  name: myphp
+  namespace: pipeline
+spec:
+  type: NodePort
+  ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+      nodePort: 30036
+  selector:
+    deploymentconfig: myphp
+  sessionAffinity: None
+   
+
+---
+
+apiVersion: v1
+kind: Route
+metadata:
+  name: myphp
+spec:
+  host: myphp-pipeline.openshift.cf
+  to:
+    kind: Service
+    name: myphp
